@@ -32,3 +32,66 @@ El sistema se enmarca en el contexto de una **clínica ficticia**, donde médico
 - Calendario mensual dinámico con días de tratamiento
 - Visualización de estado de recetas (activas / finalizadas)
 - Autorización médico–paciente (por información sensible)
+
+### Seguridad
+- Acceso restringido mediante reglas de Firestore
+- Los pacientes solo pueden acceder a su información
+- Los médicos solo pueden acceder a pacientes autorizados
+
+---
+
+## Tecnologías utilizadas
+
+- **React + Vite**
+- **React Router**
+- **react-calendar**
+- **date-fns**
+- **Firebase Authentication**
+- **Cloud Firestore**
+
+---
+
+## Arquitectura (resumen)
+
+- Aplicación web SPA (Single Page Application)
+- Separación por capas:
+  - UI / Pages
+  - Servicios (Firebase, lógica de negocio)
+  - Contexto de autenticación
+- Base de datos NoSQL orientada a documentos (Firestore)
+- Control de acceso basado en roles y reglas de seguridad
+
+---
+
+## Instalación y ejecución local
+
+### Requisitos
+- Node.js (v18 o superior recomendado)
+- npm
+
+### Pasos
+
+1. Clonar el repositorio:
+   ```bash
+   git clone https://github.com/tu-usuario/farmanote.git
+   cd farmanote
+
+
+2. Instalar dependencias:
+    npm install
+    Crear archivo .env con las variables de Firebase:
+
+    VITE_FIREBASE_API_KEY=xxxxx
+    VITE_FIREBASE_AUTH_DOMAIN=xxxxx
+    VITE_FIREBASE_PROJECT_ID=xxxxx
+    VITE_FIREBASE_STORAGE_BUCKET=xxxxx
+    VITE_FIREBASE_MESSAGING_SENDER_ID=xxxxx
+    VITE_FIREBASE_APP_ID=xxxxx
+    
+    Ejecutar en desarrollo: npm run dev
+
+---
+
+## Despliegue en Netlify:
+
+farmanote.netlify.app
