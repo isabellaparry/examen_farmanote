@@ -1,16 +1,34 @@
-# React + Vite
+# FarmaNote 💊
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+FarmaNote es una **aplicación web** desarrollada como proyecto de título, orientada a mejorar la **adherencia a tratamientos farmacológicos**, permitiendo a pacientes y médicos gestionar recetas digitales de manera segura y clara.
 
-Currently, two official plugins are available:
+La plataforma permite registrar medicamentos con información detallada (dosis, intervalo, duración y fechas), visualizar las recetas en formato de listado y calendario mensual, y asegurar que la información médica sea accesible únicamente por los usuarios autorizados.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## Contexto del proyecto
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Diversos estudios de la Organización Mundial de la Salud indican que la adherencia a tratamientos farmacológicos alcanza solo alrededor del 50%, incluso en países desarrollados.  
+FarmaNote surge como una solución digital para apoyar el **Uso Racional de Medicamentos**, facilitando la comprensión y seguimiento de las indicaciones médicas.
 
-## Expanding the ESLint configuration
+El sistema se enmarca en el contexto de una **clínica ficticia**, donde médicos y pacientes interactúan mediante una plataforma web moderna.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Funcionalidades principales
+
+### Autenticación y roles
+- Registro e inicio de sesión con Firebase Authentication
+- Gestión de roles: **Doctor** y **Paciente**
+- Redirección automática según rol
+
+### Flujo Médico
+- Búsqueda de pacientes por RUT
+- Creación, edición y eliminación de recetas médicas
+
+### Flujo Paciente
+- Visualización de recetas propias
+- Vista detallada tipo “receta”
+- Calendario mensual dinámico con días de tratamiento
+- Visualización de estado de recetas (activas / finalizadas)
+- Autorización médico–paciente (por información sensible)
