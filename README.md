@@ -73,7 +73,7 @@ El sistema se enmarca en el contexto de una **clínica ficticia**, donde médico
 
 1. Clonar el repositorio:
    ```bash
-   git clone https://github.com/tu-usuario/farmanote.git
+   git clone https://github.com/isabellaparry/examen_farmanote.git
    cd farmanote
 
 
@@ -92,12 +92,14 @@ El sistema se enmarca en el contexto de una **clínica ficticia**, donde médico
     VITE_FIREBASE_MESSAGING_SENDER_ID=xxxxx
 
     VITE_FIREBASE_APP_ID=xxxxx
+
     
-    
-    Ejecutar en desarrollo: npm run dev
+3. Ejecutar en desarrollo:
+    ```bash
+    npm run dev
 
 ---
 
 ## Despliegue en Netlify:
 
-farmanote.netlify.app
+[farmanote.netlify.app](https://farmanote.netlify.app/login)
