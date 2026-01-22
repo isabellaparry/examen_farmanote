@@ -82,11 +82,17 @@ El sistema se enmarca en el contexto de una **clínica ficticia**, donde médico
     Crear archivo .env con las variables de Firebase:
 
     VITE_FIREBASE_API_KEY=xxxxx
+
     VITE_FIREBASE_AUTH_DOMAIN=xxxxx
+
     VITE_FIREBASE_PROJECT_ID=xxxxx
+
     VITE_FIREBASE_STORAGE_BUCKET=xxxxx
+
     VITE_FIREBASE_MESSAGING_SENDER_ID=xxxxx
+
     VITE_FIREBASE_APP_ID=xxxxx
+    
     
     Ejecutar en desarrollo: npm run dev
 
