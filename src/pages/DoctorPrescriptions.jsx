@@ -54,9 +54,16 @@ export default function DoctorPrescriptions() {
     await reload();
   }
 
-  async function handleDelete(id) {
-    await deletePrescription(patientUid, id);
-    await reload();
+  async function handleDelete(prescriptionId) {
+    if (!confirm("¿Eliminar esta receta?")) return;
+
+    try {
+      await deletePrescription(patientUid, prescriptionId);
+      setItems((prev) => prev.filter((x) => x.id !== prescriptionId));
+    } catch (e) {
+      console.error(e);
+      alert(e.message);
+    }
   }
 
   async function handleQuickEdit(id) {
@@ -107,18 +114,39 @@ export default function DoctorPrescriptions() {
       ) : (
         <ul style={{ paddingLeft: 18 }}>
           {items.map((r) => (
-            <li key={r.id} style={{ marginBottom: 12 }}>
-              <div>
-                <strong>{r.medicamentoNombre}</strong> — {r.dosis} — cada {r.intervaloHoras}h — {r.cantidadDias} días
-              </div>
-              <div>Inicio: {r.fechaInicioTratamiento} | Estado: {r.estado}</div>
+          <li key={r.id} style={{ marginBottom: 12 }}>
+            <div>
+              <strong>{r.medicamentoNombre}</strong> — {r.dosis} — cada {r.intervaloHoras}h — {r.cantidadDias} días
+            </div>
 
-              <div style={{ display: "flex", gap: 10, marginTop: 6, flexWrap: "wrap" }}>
-                <button onClick={() => handleQuickEdit(r.id)}>Marcar finalizada</button>
-                <button onClick={() => handleDelete(r.id)}>Eliminar</button>
-              </div>
-            </li>
-          ))}
+            <div>
+              Inicio: {r.fechaInicioTratamiento} | Estado: <strong>{r.estado}</strong>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                marginTop: 6,
+                flexWrap: "wrap",
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => handleQuickEdit(r.id)}
+              >
+                Marcar finalizada
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleDelete(r.id)}
+              >
+                Eliminar
+              </button>
+            </div>
+          </li>
+        ))}
         </ul>
       )}
     </div>

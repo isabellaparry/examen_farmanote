@@ -102,4 +102,4 @@ El sistema se enmarca en el contexto de una **clínica ficticia**, donde médico
 
 ## Despliegue en Netlify:
 
-[farmanote.netlify.app](https://farmanote.netlify.app/login)
+[farmanote.netlify.app](https://farmanote.netlify.app/)
