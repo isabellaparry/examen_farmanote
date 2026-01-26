@@ -1,0 +1,193 @@
+{
+  "users": {
+    "2bh2uQaJQlYoKZSU9Cru8ppl5J23": {
+      "createdAt": {
+        "_seconds": 1769043349,
+        "_nanoseconds": 389000000
+      },
+      "role": "doctor",
+      "rutNormalized": "123456789",
+      "displayName": "doctor pruebaa",
+      "email": "docprueba2@invalid.test",
+      "updatedAt": {
+        "_seconds": 1769043349,
+        "_nanoseconds": 389000000
+      }
+    },
+    "6v6zB5noqvMw2028iB42V17Kq6r2": {
+      "createdAt": {
+        "_seconds": 1769034004,
+        "_nanoseconds": 557000000
+      },
+      "role": "patient",
+      "rutNormalized": "213673785",
+      "displayName": "Isabella Paciente",
+      "email": "isabellapac@invalid.test",
+      "updatedAt": {
+        "_seconds": 1769034004,
+        "_nanoseconds": 557000000
+      }
+    },
+    "8gHoCd5ytpSvmY63tjRliERbQxA2": {
+      "createdAt": {
+        "_seconds": 1769036413,
+        "_nanoseconds": 748000000
+      },
+      "role": "doctor",
+      "rutNormalized": "207039993",
+      "displayName": "Isabella Doctor",
+      "email": "docprueba1@invalid.test",
+      "updatedAt": {
+        "_seconds": 1769036413,
+        "_nanoseconds": 748000000
+      }
+    },
+    "IiSDMQRcjpPJm8HuIC6PXGjS10G2": {
+      "createdAt": {
+        "_seconds": 1769447547,
+        "_nanoseconds": 102000000
+      },
+      "role": "patient",
+      "rutNormalized": "275143774",
+      "displayName": "Paciente Prueba",
+      "email": "paciente@prueba.test",
+      "updatedAt": {
+        "_seconds": 1769447547,
+        "_nanoseconds": 102000000
+      }
+    },
+    "oJR6kLu8JpMbHxibCNrlHbLJlVi2": {
+      "createdAt": {
+        "_seconds": 1769034469,
+        "_nanoseconds": 653000000
+      },
+      "role": "patient",
+      "rutNormalized": "216704053",
+      "displayName": "Isabella Paciente Dos",
+      "email": "isabellapac2@invalid.test",
+      "updatedAt": {
+        "_seconds": 1769034469,
+        "_nanoseconds": 653000000
+      }
+    }
+  },
+  "doctors": {
+    "2bh2uQaJQlYoKZSU9Cru8ppl5J23": {
+      "createdAt": {
+        "_seconds": 1769043349,
+        "_nanoseconds": 673000000
+      },
+      "rutNormalized": "123456789",
+      "displayName": "doctor pruebaa",
+      "email": "docprueba2@invalid.test",
+      "updatedAt": {
+        "_seconds": 1769043349,
+        "_nanoseconds": 673000000
+      },
+      "_subcollections": {
+        "authorizedPatients": {
+          "oJR6kLu8JpMbHxibCNrlHbLJlVi2": {
+            "patientDisplayName": "Isabella Paciente Dos",
+            "patientRutNormalized": "216704053",
+            "patientUid": "oJR6kLu8JpMbHxibCNrlHbLJlVi2",
+            "authorizedAt": {
+              "_seconds": 1769043381,
+              "_nanoseconds": 580000000
+            },
+            "active": true
+          }
+        }
+      }
+    },
+    "8gHoCd5ytpSvmY63tjRliERbQxA2": {
+      "createdAt": {
+        "_seconds": 1769036413,
+        "_nanoseconds": 991000000
+      },
+      "rutNormalized": "207039993",
+      "displayName": "Isabella Doctor",
+      "email": "docprueba1@invalid.test",
+      "updatedAt": {
+        "_seconds": 1769036413,
+        "_nanoseconds": 991000000
+      },
+      "_subcollections": {
+        "authorizedPatients": {
+          "6v6zB5noqvMw2028iB42V17Kq6r2": {
+            "patientDisplayName": "Isabella Paciente",
+            "patientRutNormalized": "213673785",
+            "patientUid": "6v6zB5noqvMw2028iB42V17Kq6r2",
+            "active": true,
+            "authorizedAt": {
+              "_seconds": 1769175044,
+              "_nanoseconds": 957000000
+            }
+          }
+        }
+      }
+    }
+  },
+  "patients": {
+    "IiSDMQRcjpPJm8HuIC6PXGjS10G2": {
+      "createdAt": {
+        "_seconds": 1769447547,
+        "_nanoseconds": 364000000
+      },
+      "rutNormalized": "275143774",
+      "displayName": "Paciente Prueba",
+      "email": "paciente@prueba.test",
+      "updatedAt": {
+        "_seconds": 1769447547,
+        "_nanoseconds": 364000000
+      },
+      "_subcollections": {
+        "allowedDoctors": {},
+        "prescriptions": {}
+      }
+    },
+    "oJR6kLu8JpMbHxibCNrlHbLJlVi2": {
+      "createdAt": {
+        "_seconds": 1769034469,
+        "_nanoseconds": 934000000
+      },
+      "rutNormalized": "216704053",
+      "displayName": "Isabella Paciente Dos",
+      "email": "isabellapac2@invalid.test",
+      "updatedAt": {
+        "_seconds": 1769034469,
+        "_nanoseconds": 934000000
+      },
+      "_subcollections": {
+        "allowedDoctors": {
+          "2bh2uQaJQlYoKZSU9Cru8ppl5J23": {
+            "authorizedAt": {
+              "_seconds": 1769043381,
+              "_nanoseconds": 311000000
+            },
+            "active": true
+          }
+        },
+        "prescriptions": {
+          "sIQNkYa2eZkuWBvR6mhR": {
+            "doctorUid": "2bh2uQaJQlYoKZSU9Cru8ppl5J23",
+            "patientUid": "oJR6kLu8JpMbHxibCNrlHbLJlVi2",
+            "medicamentoNombre": "paracetamol 500mg",
+            "dosis": "1",
+            "intervaloHoras": 4,
+            "cantidadDias": 3,
+            "fechaInicioTratamiento": "2026-01-23",
+            "createdAt": {
+              "_seconds": 1769043417,
+              "_nanoseconds": 319000000
+            },
+            "estado": "finalizada",
+            "updatedAt": {
+              "_seconds": 1769175079,
+              "_nanoseconds": 756000000
+            }
+          }
+        }
+      }
+    }
+  }
+}
