@@ -15,14 +15,13 @@ export default function DoctorPrescriptions() {
 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [signatureUrl, setSignatureUrl] = useState(null);
 
   // formulario simple MVP
-  const [medicationName, setMedicationName] = useState("");
-  const [dosage, setDosage] = useState("");
-  const [intervalHours, setIntervalHours] = useState(8);
-  const [durationDays, setDurationDays] = useState(7);
-  const [startDate, setStartDate] = useState("");
+  const [medicamentoNombre, setMedicamentoNombre] = useState("");
+  const [dosis, setDosis] = useState("");
+  const [intervaloHoras, setIntervaloHoras] = useState(8);
+  const [cantidadDias, setCantidadDias] = useState(7);
+  const [fechaInicio, setFechaInicio] = useState("");
 
   async function reload() {
     setLoading(true);
@@ -32,43 +31,26 @@ export default function DoctorPrescriptions() {
   }
 
   useEffect(() => {
-      async function loadDoctor() {
-      if (!doctorUid) return;
-
-      const ref = doc(db, "doctors", doctorUid);
-      const snap = await getDoc(ref);
-
-      if (snap.exists()) {
-        setSignatureUrl(snap.data().signatureUrl || null);
-      }
-    }
-
-    loadDoctor();
     reload();
-  }, [patientUid, doctorUid]);
+  }, [patientUid]);
 
   async function handleCreate(e) {
     e.preventDefault();
     await createPrescription(patientUid, {
-      medicationName,
-      dosage,
-      intervalHours,
-      durationDays,
-      startDate,
-      issueDate: new Date().toISOString().split("T")[0],
-      status: "active",
       doctorUid,
       patientUid,
-      isSigned: !!signatureUrl, // ✅ correcto
-      signatureUrl,   // ✅ ahora sí existe
-      createdAt: serverTimestamp(),
+      medicamentoNombre,
+      dosis,
+      intervaloHoras: Number(intervaloHoras),
+      cantidadDias: Number(cantidadDias),
+      fechaInicioTratamiento: fechaInicio,
+      estado: "activa",
     });
-    setMedicationName("");
-    setDosage("");
-    setIntervalHours(8);
-    setDurationDays(7);
-    setStartDate("");
-
+    setMedicamentoNombre("");
+    setDosis("");
+    setIntervaloHoras(8);
+    setCantidadDias(7);
+    setFechaInicio("");
     await reload();
   }
 
@@ -98,27 +80,27 @@ export default function DoctorPrescriptions() {
       <form onSubmit={handleCreate} style={{ display: "grid", gap: 10, maxWidth: 520 }}>
         <label>
           Medicamento
-          <input value={/*medicamentoNombre*/medicationName} onChange={(e) => setMedicamentoNombre(e.target.value)} required />
+          <input value={medicamentoNombre} onChange={(e) => setMedicamentoNombre(e.target.value)} required />
         </label>
 
         <label>
           Dosis
-          <input value={/*dosis*/dosage} onChange={(e) => setDosis(e.target.value)} required placeholder="Ej: 1 comprimido" />
+          <input value={dosis} onChange={(e) => setDosis(e.target.value)} required placeholder="Ej: 1 comprimido" />
         </label>
 
         <label>
           Intervalo (horas)
-          <input type="number" value={/*intervaloHoras*/intervalHours} onChange={(e) => setIntervaloHoras(e.target.value)} min={1} required />
+          <input type="number" value={intervaloHoras} onChange={(e) => setIntervaloHoras(e.target.value)} min={1} required />
         </label>
 
         <label>
           Duración (días)
-          <input type="number" value={/*cantidadDias*/durationDays} onChange={(e) => setCantidadDias(e.target.value)} min={1} required />
+          <input type="number" value={cantidadDias} onChange={(e) => setCantidadDias(e.target.value)} min={1} required />
         </label>
 
         <label>
           Fecha inicio
-          <input type="date" value={/*fechaInicio*/startDate} onChange={(e) => setStartDate(e.target.value)} required />
+          <input type="date" value={fechaInicio} onChange={(e) => setFechaInicio(e.target.value)} required />
         </label>
 
         <button type="submit">Guardar receta</button>

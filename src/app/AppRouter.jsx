@@ -6,12 +6,15 @@ import Login from '../pages/Login.jsx';
 import Registro from '../pages/Registro.jsx';
 import DoctorDashboard from '../pages/DoctorDashboard.jsx';
 import PacienteDashboard from '../pages/PacienteDashboard.jsx';
+import AdminDashboard from '../pages/AdminDashboard.jsx';
 import NotFound from '../pages/NotFound.jsx';
 import DoctorPatients from '../pages/DoctorPatients.jsx';
 import DoctorPrescriptions from '../pages/DoctorPrescriptions.jsx';
 import PatientPrescriptions from '../pages/PatientPrescriptions.jsx';
 import PatientPrescriptionDetail from '../pages/PatientPrescriptionDetail.jsx';
 import PatientCalendar from '../pages/PatientCalendar.jsx';
+import ManageDoctors from '../pages/ManageDoctors.jsx';
+import ManageSites from '../pages/ManageSites.jsx';
 
 
 export default function AppRouter() {
@@ -26,6 +29,30 @@ export default function AppRouter() {
           <Route path="/registro" element={<Registro />} />
 
           {/* Privadas por rol */}
+          <Route
+            path="/admin"
+            element={
+              <RoleRoute allowedRole="admin">
+                <AdminDashboard />
+              </RoleRoute>
+            }
+          />
+          <Route
+            path="/managedoctors"
+            element={
+              <RoleRoute allowedRole="admin">
+                <ManageDoctors />
+              </RoleRoute>
+            }
+          />
+          <Route
+            path="/managesites"
+            element={
+              <RoleRoute allowedRole="admin">
+                <ManageSites />
+              </RoleRoute>
+            }
+          />
           <Route
             path="/doctor"
             element={

@@ -1,6 +1,6 @@
-# FarmaNote 💊
+# docnote 💊
 
-FarmaNote es una **aplicación web** desarrollada como proyecto de título, orientada a mejorar la **adherencia a tratamientos farmacológicos**, permitiendo a pacientes y médicos gestionar recetas digitales de manera segura y clara.
+DocNote es una **aplicación web** desarrollada como proyecto de título, orientada a mejorar la **adherencia a tratamientos farmacológicos**, permitiendo a pacientes y médicos gestionar recetas digitales de manera segura y clara.
 
 La plataforma permite registrar medicamentos con información detallada (dosis, intervalo, duración y fechas), visualizar las recetas en formato de listado y calendario mensual, y asegurar que la información médica sea accesible únicamente por los usuarios autorizados.
 
@@ -9,9 +9,9 @@ La plataforma permite registrar medicamentos con información detallada (dosis, 
 ## Contexto del proyecto
 
 Diversos estudios de la Organización Mundial de la Salud indican que la adherencia a tratamientos farmacológicos alcanza solo alrededor del 50%, incluso en países desarrollados.  
-FarmaNote surge como una solución digital para apoyar el **Uso Racional de Medicamentos**, facilitando la comprensión y seguimiento de las indicaciones médicas.
+docnote surge como una solución digital para apoyar el **Uso Racional de Medicamentos**, facilitando la comprensión y seguimiento de las indicaciones médicas.
 
-El sistema se enmarca en el contexto de una **clínica ficticia**, donde médicos y pacientes interactúan mediante una plataforma web moderna.
+El sistema pretende funcionar como una web en la que médicos y pacientes interactúan.
 
 ---
 
@@ -25,12 +25,15 @@ El sistema se enmarca en el contexto de una **clínica ficticia**, donde médico
 ### Flujo Médico
 - Búsqueda de pacientes por RUT
 - Creación, edición y eliminación de recetas médicas
+- Creación, edición y eliminación de citas médicas
+- Creación, edición y eliminación de órdenes médicas
 
 ### Flujo Paciente
 - Visualización de recetas propias
 - Vista detallada tipo “receta”
-- Calendario mensual dinámico con días de tratamiento
-- Visualización de estado de recetas (activas / finalizadas)
+- Vista detallada de citas médicas
+- Vista de órdenes de exámenes
+- Calendario mensual dinámico con días de tratamiento y citas médicas
 - Autorización médico–paciente (por información sensible)
 
 ### Seguridad
@@ -74,7 +77,7 @@ El sistema se enmarca en el contexto de una **clínica ficticia**, donde médico
 1. Clonar el repositorio:
    ```bash
    git clone https://github.com/isabellaparry/examen_farmanote.git
-   cd farmanote
+   cd examen_farmanote
 
 
 2. Instalar dependencias:
@@ -102,4 +105,4 @@ El sistema se enmarca en el contexto de una **clínica ficticia**, donde médico
 
 ## Despliegue en Netlify:
 
-[farmanote.netlify.app](https://farmanote.netlify.app/)
+[docnote.netlify.app](https://docnote.netlify.app/)

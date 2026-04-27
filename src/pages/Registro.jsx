@@ -41,10 +41,6 @@ export default function Registro() {
         await createPatientDoc({ uid: user.uid, displayName: displayName.trim(), rutNormalized, email: user.email });
       }
 
-      if (role === "doctor") {
-        await createDoctorDoc({ uid: user.uid, displayName: displayName.trim(), rutNormalized, email: user.email });
-      }
-
       // Redirigir según rol
       navigate(role === "doctor" ? "/doctor" : "/paciente", { replace: true });
     } catch (err) {
@@ -56,7 +52,7 @@ export default function Registro() {
 
   return (
     <div>
-      <h1>Registro</h1>
+      <h1>Registro Paciente</h1>
 
       <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12, maxWidth: 460 }}>
         <label>
@@ -73,7 +69,6 @@ export default function Registro() {
           Rol
           <select value={role} onChange={(e) => setRole(e.target.value)} required>
             <option value="patient">Paciente</option>
-            <option value="doctor">Doctor</option>
           </select>
         </label>
 

@@ -16,8 +16,18 @@ export default function Login() {
   // Si ya hay sesión + perfil, redirige automáticamente
   useEffect(() => {
     if (!isAuthReady || isProfileLoading) return;
+    
+    const roleRoutes = {
+      doctor: "/doctor",
+      patient: "/paciente",
+      admin: "/admin",
+    };
+
     if (user && profile?.role) {
-      navigate(profile.role === "doctor" ? "/doctor" : "/paciente", { replace: true });
+      const route = roleRoutes[profile.role];
+      if (route) {
+        navigate(route, { replace: true });
+      }
     }
   }, [user, profile, isAuthReady, isProfileLoading, navigate]);
 
@@ -69,7 +79,7 @@ export default function Login() {
       </form>
 
       <p style={{ marginTop: 12 }}>
-        ¿No tienes cuenta? <Link to="/registro">Regístrate</Link>
+        ¡Hola! ¿Eres paciente y no tienes cuenta? <Link to="/registro">Regístrate</Link>
       </p>
     </div>
   );

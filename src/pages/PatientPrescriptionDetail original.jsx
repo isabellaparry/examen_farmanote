@@ -39,13 +39,16 @@ export default function PatientPrescriptionDetail() {
       <h1>Detalle de receta</h1>
 
       <div style={{ border: "1px solid rgba(0,0,0,0.12)", padding: 16, borderRadius: 10 }}>
-        <p><strong>Medicamento:</strong> {item.medicamentoNombre ?? item.medicationName}</p>
-        <p><strong>Dosis:</strong> {item.dosis ?? item.dosage}</p>
-        <p><strong>Intervalo:</strong> cada {item.intervaloHoras ?? item.intervalHours} horas</p>
-        <p><strong>Duración:</strong> {item.cantidadDias ?? item.durationDays} días</p>
-        <p><strong>Inicio tratamiento:</strong> {item.fechaInicioTratamiento ?? item.startDate}</p>
-        <p><strong>Estado:</strong> {item.estado ?? item.status}</p>
-        <p><strong>Fecha de emisión:</strong> {item.issueDate}</p>
+        <p><strong>Medicamento:</strong> {item.medicamentoNombre}</p>
+        <p><strong>Dosis:</strong> {item.dosis}</p>
+        <p><strong>Intervalo:</strong> cada {item.intervaloHoras} horas</p>
+        <p><strong>Duración:</strong> {item.cantidadDias} días</p>
+        <p><strong>Inicio tratamiento:</strong> {item.fechaInicioTratamiento}</p>
+        <p><strong>Estado:</strong> {item.estado}</p>
+
+        {"conComida" in item && (
+          <p><strong>Con comida:</strong> {item.conComida ? "Sí" : "No"}</p>
+        )}
 
         <hr style={{ margin: "16px 0" }} />
 
