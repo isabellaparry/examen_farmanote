@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { registerWithEmail } from '../services/auth';
 import { createUserProfile } from '../services/users';
-import { normalizeRut } from '../utils/rut';
+import { normalizeRut, isValidRut } from "../utils/rut";
 import { createPatientDoc } from '../services/patients';
 import { createDoctorDoc } from '../services/doctors';
 
@@ -25,9 +25,14 @@ export default function Registro() {
     setLoading(true);
 
     try {
-      const user = await registerWithEmail(email, password);
+      if (!isValidRut(rut)) {
+        setError("El RUT ingresado no es válido.");
+        setLoading(false);
+        return;
+      }
 
       const rutNormalized = normalizeRut(rut);
+      const user = await registerWithEmail(email, password);
 
       await createUserProfile({
         uid: user.uid,

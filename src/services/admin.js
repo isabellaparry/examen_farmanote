@@ -4,13 +4,20 @@ import {
   query,
   orderBy,
   doc,
+  setDoc,
   updateDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import { getFunctions, httpsCallable } from "firebase/functions";
-import { db, app } from "./firebase";
 
-const functions = getFunctions(app);
+import { initializeApp, deleteApp } from "firebase/app";
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
+
+import { db, firebaseConfig } from "./firebase";
 
 export async function createDoctorByAdmin({
   displayName,
@@ -20,18 +27,48 @@ export async function createDoctorByAdmin({
   siteUids = [],
   signatureUrl = null,
 }) {
-  const callable = httpsCallable(functions, "createDoctorByAdmin");
+  const secondaryApp = initializeApp(firebaseConfig, `secondary-${Date.now()}`);
+  const secondaryAuth = getAuth(secondaryApp);
 
-  const result = await callable({
-    displayName: displayName?.trim(),
-    rutNormalized,
-    email: email?.trim(),
-    password,
-    siteUids,
-    signatureUrl: signatureUrl?.trim() || null,
-  });
+  try {
+    const userCredential = await createUserWithEmailAndPassword(
+      secondaryAuth,
+      email.trim(),
+      password
+    );
 
-  return result.data;
+    const doctorUid = userCredential.user.uid;
+    const now = serverTimestamp();
+
+    await setDoc(doc(db, "users", doctorUid), {
+      role: "doctor",
+      displayName: displayName.trim(),
+      rutNormalized,
+      email: email.trim(),
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    await setDoc(doc(db, "doctors", doctorUid), {
+      uid: doctorUid,
+      displayName: displayName.trim(),
+      rutNormalized,
+      email: email.trim(),
+      siteUids,
+      signatureUrl: signatureUrl?.trim() || null,
+      isActive: true,
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    return {
+      success: true,
+      doctorUid,
+    };
+  } finally {
+    await signOut(secondaryAuth).catch(() => {});
+    await deleteApp(secondaryApp).catch(() => {});
+  }
 }
 
 export async function listDoctors() {

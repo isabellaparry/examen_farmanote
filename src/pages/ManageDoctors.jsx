@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { normalizeRut } from "../utils/rut";
+import { normalizeRut, isValidRut } from "../utils/rut";
 import {
   createDoctorByAdmin,
   listDoctors,
   toggleDoctorStatus,
 } from "../services/admin";
 import { uploadDoctorSignature } from "../services/storage";
+import { listSites } from "../services/sites";
 
 export default function ManageDoctors() {
   // FORMULARIO
@@ -22,9 +23,37 @@ export default function ManageDoctors() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const [sites, setSites] = useState([]);
+  const [selectedSiteUids, setSelectedSiteUids] = useState([]);
+  const [loadingSites, setLoadingSites] = useState(true);
+
   // LISTADO
   const [items, setItems] = useState([]);
   const [qName, setQName] = useState("");
+
+  function getSiteNames(siteUids = []) {
+    return siteUids
+      .map((siteUid) => sites.find((s) => s.id === siteUid)?.name)
+      .filter(Boolean)
+      .join(", ");
+  }
+
+  async function loadSites() {
+    try {
+      setLoadingSites(true);
+      const list = await listSites();
+
+      // Solo mostramos sedes activas
+      const activeSites = list.filter((site) => site.isActive !== false);
+
+      setSites(activeSites);
+    } catch (err) {
+      console.error("Load sites error:", err);
+      setError(err?.message ?? "Error al cargar las sucursales.");
+    } finally {
+      setLoadingSites(false);
+    }
+  }
 
   async function loadDoctors() {
     try {
@@ -41,6 +70,7 @@ export default function ManageDoctors() {
 
   useEffect(() => {
     loadDoctors();
+    loadSites();
   }, []);
 
   const filtered = useMemo(() => {
@@ -59,6 +89,18 @@ export default function ManageDoctors() {
     setSubmitting(true);
 
     try {
+      if (!isValidRut(rut)) {
+        setError("El RUT ingresado no es válido.");
+        setSubmitting(false);
+        return;
+      }
+
+      if (selectedSiteUids.length === 0) {
+        setError("Debes seleccionar al menos una sucursal.");
+        setSubmitting(false);
+        return;
+      }
+
       const rutNormalized = normalizeRut(rut);
 
       await createDoctorByAdmin({
@@ -66,7 +108,7 @@ export default function ManageDoctors() {
         rutNormalized,
         email: email.trim(),
         password,
-        siteUids: [],
+        siteUids: selectedSiteUids,
         signatureUrl: signatureUrl.trim() || null,
       });
 
@@ -74,10 +116,12 @@ export default function ManageDoctors() {
       setRut("");
       setEmail("");
       setPassword("");
-      setSignatureFile(null);
+      setSelectedSiteUids([]);
+      setSignatureUrl("");
 
       setSuccess("Doctor registrado correctamente.");
       await loadDoctors();
+      
     } catch (err) {
       console.error("Create doctor error:", err);
       setError(err?.message ?? "Error al registrar el doctor.");
@@ -107,6 +151,16 @@ export default function ManageDoctors() {
     } finally {
       setTogglingId(null);
     }
+  }
+
+  function handleToggleSite(siteUid) {
+    setSelectedSiteUids((prev) => {
+      if (prev.includes(siteUid)) {
+        return prev.filter((id) => id !== siteUid);
+      }
+
+      return [...prev, siteUid];
+    });
   }
 
   return (
@@ -163,6 +217,50 @@ export default function ManageDoctors() {
             </label>
 
             <label>
+              URL de la firma
+              <input
+                type="url"
+                value={signatureUrl}
+                onChange={(e) => setSignatureUrl(e.target.value)}
+                placeholder="https://..."
+              />
+            </label>
+
+            <fieldset
+              style={{
+                border: "1px solid rgba(0,0,0,0.12)",
+                borderRadius: 8,
+                padding: 12,
+              }}
+            >
+              <legend>Sucursales</legend>
+
+              {loadingSites ? (
+                <p>Cargando sucursales...</p>
+              ) : sites.length === 0 ? (
+                <p>No hay sucursales activas registradas.</p>
+              ) : (
+                <div style={{ display: "grid", gap: 8 }}>
+                  {sites.map((site) => (
+                    <label
+                      key={site.id}
+                      style={{ display: "flex", gap: 8, alignItems: "center" }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedSiteUids.includes(site.id)}
+                        onChange={() => handleToggleSite(site.id)}
+                      />
+                      <span>
+                        <strong>{site.name}</strong> — {site.address}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </fieldset>
+
+            <label>
               Contraseña temporal
               <input
                 type="password"
@@ -171,16 +269,6 @@ export default function ManageDoctors() {
                 required
                 autoComplete="new-password"
                 minLength={6}
-              />
-            </label>
-
-            <label>
-              URL de la firma
-              <input
-                type="url"
-                value={signatureUrl}
-                onChange={(e) => setSignatureUrl(e.target.value)}
-                placeholder="https://..."
               />
             </label>
 
@@ -227,6 +315,10 @@ export default function ManageDoctors() {
                   </div>
                   <div>RUT: {d.rutNormalized}</div>
                   <div>Activo: {d.isActive === false ? "No" : "Sí"}</div>
+
+                  <div>
+                    Sucursales: {getSiteNames(d.siteUids) || "Sin sucursal asignada"}
+                  </div>
 
                   {d.signatureUrl && (
                     <div style={{ marginTop: 8 }}>

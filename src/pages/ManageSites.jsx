@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../services/firebase";
-import { createSiteDoc } from "../services/sites";
+import { createSiteDoc, toggleSiteStatus } from "../services/sites";
 
 export default function ManageSites() {
   // FORMULARIO
