@@ -3,18 +3,21 @@ import jsPDF from "jspdf";
 async function loadImageAsBase64(url) {
   if (!url) return null;
 
-  // Si ya viene como base64/dataURL, se usa directamente
   if (url.startsWith("data:image/")) {
     return url;
   }
 
   try {
-    const response = await fetch(url, {
-      mode: "cors",
-    });
+    const absoluteUrl = url.startsWith("http")
+      ? url
+      : new URL(url, window.location.origin).href;
+
+    console.log("Loading signature image:", absoluteUrl);
+
+    const response = await fetch(absoluteUrl);
 
     if (!response.ok) {
-      throw new Error("No se pudo cargar la imagen de firma.");
+      throw new Error(`No se pudo cargar la imagen: ${response.status}`);
     }
 
     const blob = await response.blob();
@@ -45,19 +48,13 @@ function addHeader(doc, title) {
   doc.line(20, 32, 190, 32);
 }
 
-function addSignature(doc, signatureBase64, y) {
-  if (!signatureBase64) return;
-
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.text("Firma del profesional:", 20, y);
-
-  function getImageFormat(base64) {
+function getImageFormat(base64) {
   if (!base64) return "JPEG";
 
   if (base64.startsWith("data:image/png")) return "PNG";
   if (base64.startsWith("data:image/jpeg")) return "JPEG";
   if (base64.startsWith("data:image/jpg")) return "JPEG";
+  if (base64.startsWith("data:image/webp")) return "WEBP";
 
   return "JPEG";
 }
@@ -70,19 +67,20 @@ function addSignature(doc, signatureBase64, y) {
   if (signatureBase64) {
     const format = getImageFormat(signatureBase64);
 
-    doc.addImage(signatureBase64, format, 20, y + 5, 50, 25);
+    try {
+      doc.addImage(signatureBase64, format, 20, y + 5, 50, 25);
+    } catch (error) {
+      console.error("Error adding signature to PDF:", error);
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.text("Firma no disponible", 20, y + 15);
+    }
   } else {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
     doc.text("Firma no disponible", 20, y + 15);
   }
-
-  doc.line(20, y + 35, 90, y + 35);
-
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(9);
-  doc.text("Profesional tratante", 20, y + 40);
-}
 
   doc.line(20, y + 35, 90, y + 35);
 
@@ -131,10 +129,10 @@ export async function generatePrescriptionPdf({
   doc.text(`Dosis: ${prescription.dosage || ""}`, 20, y);
   y += 8;
 
-  doc.text(`Intervalo: cada ${prescription.intervalHours} horas`, 20, y);
+  doc.text(`Intervalo: cada ${prescription.intervalHours || ""} horas`, 20, y);
   y += 8;
 
-  doc.text(`Duración: ${prescription.durationDays} días`, 20, y);
+  doc.text(`Duración: ${prescription.durationDays || ""} días`, 20, y);
   y += 8;
 
   doc.text(`Inicio del tratamiento: ${prescription.startDate || ""}`, 20, y);
