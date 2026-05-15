@@ -10,6 +10,7 @@ export default function PatientExamOrders() {
   const { user } = useAuth();
   const patientUid = user?.uid;
 
+  const [patientProfile, setPatientProfile] = useState(null);
   const [orders, setOrders] = useState([]);
   const [doctors, setDoctors] = useState([]);
 
@@ -18,27 +19,34 @@ export default function PatientExamOrders() {
   const [error, setError] = useState("");
 
   async function loadData() {
-    const patientSnap = await getDoc(doc(db, "patients", patientUid));
-    if (!patientUid) return;
+  if (!patientUid) return;
 
-    try {
-      setLoading(true);
-      setError("");
+  try {
+    setLoading(true);
+    setError("");
 
-      const [ordersList, doctorsList] = await Promise.all([
-        listPatientExamOrders(patientUid),
-        listDoctors(),
-      ]);
+    const [ordersList, doctorsList, patientSnap] = await Promise.all([
+      listPatientExamOrders(patientUid),
+      listDoctors(),
+      getDoc(doc(db, "patients", patientUid)),
+    ]);
 
-      setOrders(ordersList);
-      setDoctors(doctorsList);
-    } catch (err) {
-      console.error("Load patient exam orders error:", err);
-      setError(err?.message ?? "Error al cargar las órdenes de exámenes.");
-    } finally {
-      setLoading(false);
+    setOrders(ordersList);
+    setDoctors(doctorsList);
+
+    if (patientSnap.exists()) {
+      setPatientProfile({
+        id: patientSnap.id,
+        ...patientSnap.data(),
+      });
     }
+  } catch (err) {
+    console.error("Load patient exam orders error:", err);
+    setError(err?.message ?? "Error al cargar las órdenes de exámenes.");
+  } finally {
+    setLoading(false);
   }
+}
 
   useEffect(() => {
     loadData();
@@ -122,10 +130,7 @@ export default function PatientExamOrders() {
                       generateExamOrderPdf({
                         order,
                         doctor,
-                        patient: {
-                          displayName: user?.displayName || user?.email || "Paciente",
-                          rutNormalized: "",
-                        },
+                        patient: patientProfile,
                       })
                     }
                   >

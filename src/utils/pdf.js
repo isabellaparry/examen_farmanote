@@ -1,4 +1,5 @@
 import jsPDF from "jspdf";
+import { formatRut } from "./rut";
 
 async function loadImageAsBase64(url) {
   if (!url) return null;
@@ -109,13 +110,25 @@ export async function generatePrescriptionPdf({
   doc.text(`Paciente: ${patient?.displayName || "Paciente"}`, 20, y);
   y += 8;
 
-  doc.text(`RUT paciente: ${patient?.rutNormalized || "No informado"}`, 20, y);
+  doc.text(
+    `RUT paciente: ${
+        patient?.rutNormalized ? formatRut(patient.rutNormalized) : "No informado"
+    }`,
+    20,
+    y
+    );
   y += 10;
 
   doc.text(`Médico: ${doctor?.displayName || "Médico"}`, 20, y);
   y += 8;
 
-  doc.text(`RUT médico: ${doctor?.rutNormalized || "No informado"}`, 20, y);
+  doc.text(
+    `RUT médico: ${
+        doctor?.rutNormalized ? formatRut(doctor.rutNormalized) : "No informado"
+    }`,
+    20,
+    y
+    );
   y += 14;
 
   doc.setFont("helvetica", "bold");
@@ -170,10 +183,22 @@ export async function generateExamOrderPdf({
   doc.text(`Paciente: ${patient?.displayName || "Paciente"}`, 20, y);
   y += 8;
 
-  doc.text(`RUT paciente: ${patient?.rutNormalized || "No informado"}`, 20, y);
+  doc.text(
+    `RUT paciente: ${
+        patient?.rutNormalized ? formatRut(patient.rutNormalized) : "No informado"
+    }`,
+    20,
+    y
+    );
   y += 10;
 
-  doc.text(`Médico: ${doctor?.displayName || "Médico"}`, 20, y);
+  doc.text(
+  `RUT médico: ${
+        doctor?.rutNormalized ? formatRut(doctor.rutNormalized) : "No informado"
+    }`,
+    20,
+    y
+    );
   y += 8;
 
   doc.text(`RUT médico: ${doctor?.rutNormalized || "No informado"}`, 20, y);
