@@ -29,7 +29,7 @@ export default function Navbar() {
     <header>
       <nav
         className="navbar">
-        <div style={{ fontWeight: 700 }}>FarmaNote</div>
+        <div style={{ fontWeight: 700 }}>DocNote</div>
 
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <NavLink to="/login" style={linkStyle}>

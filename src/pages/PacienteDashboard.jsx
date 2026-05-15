@@ -11,7 +11,11 @@ export default function PacienteDashboard() {
 
       <Link to="/paciente/recetas">Ver mis recetas</Link> <br />
 
+      <Link to="/paciente/citas">Ver mis citas médicas</Link> <br />
+
       <Link to="/paciente/calendario">Ver calendario mensual</Link> <br />
+
+      <Link to="/paciente/ordenes">Ver órdenes de exámenes</Link> <br />
 
       <Link to="/paciente/autorizar">Autorizar médico por RUT</Link>
     </div>

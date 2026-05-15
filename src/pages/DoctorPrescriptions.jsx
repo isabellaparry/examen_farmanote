@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { doc, getDoc, serverTimestamp } from "firebase/firestore";
+
 import { useAuth } from "../app/context/AuthContext.jsx";
+import { db } from "../services/firebase";
 import {
   listPrescriptions,
   createPrescription,
@@ -16,8 +19,9 @@ export default function DoctorPrescriptions() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [signatureUrl, setSignatureUrl] = useState(null);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  // formulario simple MVP
   const [medicationName, setMedicationName] = useState("");
   const [dosage, setDosage] = useState("");
   const [intervalHours, setIntervalHours] = useState(8);
@@ -25,51 +29,82 @@ export default function DoctorPrescriptions() {
   const [startDate, setStartDate] = useState("");
 
   async function reload() {
+    if (!patientUid) return;
+
     setLoading(true);
-    const list = await listPrescriptions(patientUid);
-    setItems(list);
-    setLoading(false);
+    setError("");
+
+    try {
+      const list = await listPrescriptions(patientUid);
+      setItems(list);
+    } catch (err) {
+      console.error("Load prescriptions error:", err);
+      setError(err?.message ?? "Error al cargar las recetas.");
+    } finally {
+      setLoading(false);
+    }
   }
 
-  useEffect(() => {
-      async function loadDoctor() {
-      if (!doctorUid) return;
+  async function loadDoctorSignature() {
+    if (!doctorUid) return;
 
+    try {
       const ref = doc(db, "doctors", doctorUid);
       const snap = await getDoc(ref);
 
       if (snap.exists()) {
         setSignatureUrl(snap.data().signatureUrl || null);
       }
+    } catch (err) {
+      console.error("Load doctor signature error:", err);
+      setError(err?.message ?? "Error al cargar la firma del doctor.");
     }
+  }
 
-    loadDoctor();
+  useEffect(() => {
+    loadDoctorSignature();
     reload();
   }, [patientUid, doctorUid]);
 
   async function handleCreate(e) {
     e.preventDefault();
-    await createPrescription(patientUid, {
-      medicationName,
-      dosage,
-      intervalHours,
-      durationDays,
-      startDate,
-      issueDate: new Date().toISOString().split("T")[0],
-      status: "active",
-      doctorUid,
-      patientUid,
-      isSigned: !!signatureUrl, // ✅ correcto
-      signatureUrl,   // ✅ ahora sí existe
-      createdAt: serverTimestamp(),
-    });
-    setMedicationName("");
-    setDosage("");
-    setIntervalHours(8);
-    setDurationDays(7);
-    setStartDate("");
+    setError("");
+    setSuccess("");
 
-    await reload();
+    try {
+      if (!doctorUid) {
+        setError("No se encontró el doctor autenticado.");
+        return;
+      }
+
+      await createPrescription(patientUid, {
+        medicationName: medicationName.trim(),
+        dosage: dosage.trim(),
+        intervalHours: Number(intervalHours),
+        durationDays: Number(durationDays),
+        startDate,
+        issueDate: new Date().toISOString().split("T")[0],
+        status: "active",
+        doctorUid,
+        patientUid,
+        isSigned: !!signatureUrl,
+        signatureUrl: signatureUrl || null,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+
+      setMedicationName("");
+      setDosage("");
+      setIntervalHours(8);
+      setDurationDays(7);
+      setStartDate("");
+      setSuccess("Receta guardada correctamente.");
+
+      await reload();
+    } catch (err) {
+      console.error("Create prescription error:", err);
+      setError(err?.message ?? "Error al guardar la receta.");
+    }
   }
 
   async function handleDelete(prescriptionId) {
@@ -78,53 +113,99 @@ export default function DoctorPrescriptions() {
     try {
       await deletePrescription(patientUid, prescriptionId);
       setItems((prev) => prev.filter((x) => x.id !== prescriptionId));
-    } catch (e) {
-      console.error(e);
-      alert(e.message);
+      setSuccess("Receta eliminada correctamente.");
+    } catch (err) {
+      console.error("Delete prescription error:", err);
+      setError(err?.message ?? "Error al eliminar la receta.");
     }
   }
 
   async function handleQuickEdit(id) {
-    await updatePrescription(patientUid, id, { estado: "finalizada" });
-    await reload();
+    try {
+      await updatePrescription(patientUid, id, {
+        status: "completed",
+        updatedAt: serverTimestamp(),
+      });
+
+      setSuccess("Receta marcada como finalizada.");
+      await reload();
+    } catch (err) {
+      console.error("Update prescription error:", err);
+      setError(err?.message ?? "Error al actualizar la receta.");
+    }
   }
 
   return (
     <div>
       <h1>Gestionar recetas</h1>
-      <p><strong>Paciente UID:</strong> {patientUid}</p>
+      <p>
+        <strong>Paciente UID:</strong> {patientUid}
+      </p>
 
       <h2>Crear receta</h2>
-      <form onSubmit={handleCreate} style={{ display: "grid", gap: 10, maxWidth: 520 }}>
+
+      <form
+        onSubmit={handleCreate}
+        style={{ display: "grid", gap: 10, maxWidth: 520 }}
+      >
         <label>
           Medicamento
-          <input value={/*medicamentoNombre*/medicationName} onChange={(e) => setMedicamentoNombre(e.target.value)} required />
+          <input
+            value={medicationName}
+            onChange={(e) => setMedicationName(e.target.value)}
+            required
+          />
         </label>
 
         <label>
           Dosis
-          <input value={/*dosis*/dosage} onChange={(e) => setDosis(e.target.value)} required placeholder="Ej: 1 comprimido" />
+          <input
+            value={dosage}
+            onChange={(e) => setDosage(e.target.value)}
+            required
+          />
         </label>
 
         <label>
-          Intervalo (horas)
-          <input type="number" value={/*intervaloHoras*/intervalHours} onChange={(e) => setIntervaloHoras(e.target.value)} min={1} required />
+          Intervalo en horas
+          <input
+            type="number"
+            value={intervalHours}
+            onChange={(e) => setIntervalHours(Number(e.target.value))}
+            required
+            min="1"
+          />
         </label>
 
         <label>
-          Duración (días)
-          <input type="number" value={/*cantidadDias*/durationDays} onChange={(e) => setCantidadDias(e.target.value)} min={1} required />
+          Duración en días
+          <input
+            type="number"
+            value={durationDays}
+            onChange={(e) => setDurationDays(Number(e.target.value))}
+            required
+            min="1"
+          />
         </label>
 
         <label>
-          Fecha inicio
-          <input type="date" value={/*fechaInicio*/startDate} onChange={(e) => setStartDate(e.target.value)} required />
+          Fecha de inicio
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            required
+          />
         </label>
 
         <button type="submit">Guardar receta</button>
+
+        {error && <p style={{ color: "crimson", margin: 0 }}>{error}</p>}
+        {success && <p style={{ color: "green", margin: 0 }}>{success}</p>}
       </form>
 
       <h2 style={{ marginTop: 20 }}>Recetas existentes</h2>
+
       {loading ? (
         <p>Cargando...</p>
       ) : items.length === 0 ? (
@@ -132,39 +213,35 @@ export default function DoctorPrescriptions() {
       ) : (
         <ul style={{ paddingLeft: 18 }}>
           {items.map((r) => (
-          <li key={r.id} style={{ marginBottom: 12 }}>
-            <div>
-              <strong>{r.medicamentoNombre}</strong> — {r.dosis} — cada {r.intervaloHoras}h — {r.cantidadDias} días
-            </div>
+            <li key={r.id} style={{ marginBottom: 12 }}>
+              <div>
+                <strong>{r.medicationName}</strong> — {r.dosage} — cada{" "}
+                {r.intervalHours}h — {r.durationDays} días
+              </div>
 
-            <div>
-              Inicio: {r.fechaInicioTratamiento} | Estado: <strong>{r.estado}</strong>
-            </div>
+              <div>
+                Inicio: {r.startDate} | Estado:{" "}
+                <strong>{r.status}</strong>
+              </div>
 
-            <div
-              style={{
-                display: "flex",
-                gap: 10,
-                marginTop: 6,
-                flexWrap: "wrap",
-              }}
-            >
-              <button
-                type="button"
-                onClick={() => handleQuickEdit(r.id)}
+              <div
+                style={{
+                  display: "flex",
+                  gap: 10,
+                  marginTop: 6,
+                  flexWrap: "wrap",
+                }}
               >
-                Marcar finalizada
-              </button>
+                <button type="button" onClick={() => handleQuickEdit(r.id)}>
+                  Marcar finalizada
+                </button>
 
-              <button
-                type="button"
-                onClick={() => handleDelete(r.id)}
-              >
-                Eliminar
-              </button>
-            </div>
-          </li>
-        ))}
+                <button type="button" onClick={() => handleDelete(r.id)}>
+                  Eliminar
+                </button>
+              </div>
+            </li>
+          ))}
         </ul>
       )}
     </div>

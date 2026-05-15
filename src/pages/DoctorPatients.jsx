@@ -56,6 +56,10 @@ export default function DoctorPatients() {
                 <strong>{p.patientDisplayName || "Paciente"}</strong> — {p.patientRutNormalized}
               </div>
               <Link to={`/doctor/pacientes/${p.patientUid}/recetas`}>Gestionar recetas</Link>
+              <br />
+              <Link to={`/doctor/pacientes/${p.patientUid}/citas`}>Gestionar citas</Link>
+              <br />
+              <Link to={`/doctor/pacientes/${p.patientUid}/ordenes`}>Gestionar órdenes</Link>
             </li>
           ))}
         </ul>

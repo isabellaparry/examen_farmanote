@@ -10,8 +10,12 @@ import AdminDashboard from '../pages/AdminDashboard.jsx';
 import NotFound from '../pages/NotFound.jsx';
 import DoctorPatients from '../pages/DoctorPatients.jsx';
 import DoctorPrescriptions from '../pages/DoctorPrescriptions.jsx';
+import DoctorAppointments from '../pages/DoctorAppointments.jsx';
+import DoctorExamOrders from "../pages/DoctorExamOrders.jsx";
 import PatientPrescriptions from '../pages/PatientPrescriptions.jsx';
 import PatientPrescriptionDetail from '../pages/PatientPrescriptionDetail.jsx';
+import PatientAppointments from "../pages/PatientAppointments.jsx";
+import PatientExamOrders from "../pages/PatientExamOrders.jsx";
 import PatientCalendar from '../pages/PatientCalendar.jsx';
 import ManageDoctors from '../pages/ManageDoctors.jsx';
 import ManageSites from '../pages/ManageSites.jsx';
@@ -78,6 +82,22 @@ export default function AppRouter() {
             }
           />
           <Route
+            path="/doctor/pacientes/:patientUid/ordenes"
+            element={
+              <RoleRoute allowedRole="doctor">
+                <DoctorExamOrders />
+              </RoleRoute>
+            }
+          />
+          <Route
+            path="/doctor/pacientes/:patientUid/citas"
+            element={
+              <RoleRoute allowedRole="doctor">
+                <DoctorAppointments />
+              </RoleRoute>
+            }
+          />
+          <Route
             path="/paciente"
             element={
               <RoleRoute allowedRole="patient">
@@ -98,6 +118,22 @@ export default function AppRouter() {
             element={
               <RoleRoute allowedRole="patient">
                 <PatientPrescriptions />
+              </RoleRoute>
+            }
+          />
+          <Route
+            path="/paciente/citas"
+            element={
+              <RoleRoute allowedRole="patient">
+                <PatientAppointments />
+              </RoleRoute>
+            }
+          />
+          <Route
+            path="/paciente/ordenes"
+            element={
+              <RoleRoute allowedRole="patient">
+                <PatientExamOrders />
               </RoleRoute>
             }
           />
