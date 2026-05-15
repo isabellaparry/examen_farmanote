@@ -82,7 +82,8 @@ El sistema pretende funcionar como una web en la que médicos y pacientes intera
 
 2. Instalar dependencias:
     npm install
-    Crear archivo .env con las variables de Firebase:
+
+3. Crear archivo .env con las variables de Firebase:
 
     VITE_FIREBASE_API_KEY=xxxxx
 
@@ -97,7 +98,7 @@ El sistema pretende funcionar como una web en la que médicos y pacientes intera
     VITE_FIREBASE_APP_ID=xxxxx
 
     
-3. Ejecutar en desarrollo:
+4. Ejecutar en desarrollo:
     ```bash
     npm run dev
 
