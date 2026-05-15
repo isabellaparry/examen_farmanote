@@ -15,7 +15,6 @@ export default function PatientExamOrders() {
   const [doctors, setDoctors] = useState([]);
 
   const [loading, setLoading] = useState(true);
-  const [patientProfile, setPatientProfile] = useState(null);
   const [error, setError] = useState("");
 
   async function loadData() {
