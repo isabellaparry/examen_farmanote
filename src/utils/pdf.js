@@ -192,6 +192,9 @@ export async function generateExamOrderPdf({
     );
   y += 10;
 
+  doc.text(`Médico: ${doctor?.displayName || "Médico"}`, 20, y);
+  y += 8;
+
   doc.text(
   `RUT médico: ${
         doctor?.rutNormalized ? formatRut(doctor.rutNormalized) : "No informado"
@@ -199,9 +202,6 @@ export async function generateExamOrderPdf({
     20,
     y
     );
-  y += 8;
-
-  doc.text(`RUT médico: ${doctor?.rutNormalized || "No informado"}`, 20, y);
   y += 14;
 
   doc.setFont("helvetica", "bold");
