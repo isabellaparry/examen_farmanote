@@ -51,6 +51,7 @@ El sistema pretende funcionar como una web en la que médicos y pacientes intera
 - **date-fns**
 - **Firebase Authentication**
 - **Cloud Firestore**
+- **jspdf**
 
 ---
 
